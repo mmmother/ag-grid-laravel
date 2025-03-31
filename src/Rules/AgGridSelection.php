@@ -10,11 +10,11 @@ class AgGridSelection extends NestedRule
     public function rules(string $attribute, array $data): array
     {
         return [
-            'rowModel' => ['required', new Enum(AgGridRowModel::class)],
+            'rowModel'     => ['required', new Enum(AgGridRowModel::class)],
             'toggledNodes' => ['present', 'array'],
-            'filterModel' => ['sometimes', 'array'],
-            'selectAll' => ['sometimes', 'boolean'],
-            'customFilters' => ['sometimes', 'array'],
+            'filterModel'  => ['sometimes', 'array'],
+            'selectAll'    => ['sometimes', 'boolean'],
+            'customFilters'=> ['sometimes', 'array'],
         ];
     }
 

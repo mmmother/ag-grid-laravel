@@ -23,12 +23,12 @@ class AgGridServiceProvider extends PackageServiceProvider
             ->hasCommand(MakeAgGridControllerCommand::class);
     }
 
-    public function boot()
+    public function boot(): void
     {
         Route::macro('agGrid', function (string $route, string $controller) {
             return new PendingAgGridRegistration($route, $controller);
         });
 
-        return parent::boot();
+        parent::boot();
     }
 }

@@ -9,7 +9,7 @@ class AgGridSetValuesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'column' => ['required', 'string'],
+            'column'      => ['required', 'string'],
             'filterModel' => ['sometimes', 'array'],
         ];
     }

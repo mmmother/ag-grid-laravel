@@ -1,12 +1,12 @@
 {
-    "name": "clickbar/ag-grid-laravel",
+    "name": "mother/ag-grid-laravel",
     "description": "AG Grid server-side adapter for Laravel.",
     "keywords": [
         "clickbar",
         "laravel",
         "ag-grid-laravel"
     ],
-    "homepage": "https://github.com/clickbar/ag-grid-laravel",
+    "homepage": "https://github.com/mmmother/ag-grid-laravel",
     "license": "MIT",
     "authors": [
         {
@@ -22,21 +22,21 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/contracts": "^10.0",
-        "maatwebsite/excel": "^3.1",
+        "illuminate/contracts": "^10.0|^11.0",
+        "maatwebsite/excel": "^3.2",
         "spatie/laravel-package-tools": "^1.14.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.0",
+        "laravel/pint": "^1.10",
         "nunomaduro/collision": "^7.8",
         "nunomaduro/larastan": "^2.0.1",
-        "orchestra/testbench": "^8.8",
+        "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0"
+        "phpstan/extension-installer": "^1.2",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "phpstan/phpstan-phpunit": "^1.2"
     },
     "autoload": {
         "psr-4": {

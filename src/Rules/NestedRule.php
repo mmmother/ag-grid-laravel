@@ -5,6 +5,7 @@ namespace Clickbar\AgGrid\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Validator;
 
 abstract class NestedRule implements ValidationRule, ValidatorAwareRule
@@ -13,23 +14,18 @@ abstract class NestedRule implements ValidationRule, ValidatorAwareRule
 
     /**
      * The root validator instance.
-     *
-     * @var \Illuminate\Validation\Validator
      */
-    protected $validator;
+    protected Validator $validator;
 
     /**
      * The nested validator instance.
-     *
-     * @var \Illuminate\Validation\Validator|null
      */
-    protected $nestedValidator;
+    protected ?Validator $nestedValidator = null;
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // make sure the input is an array
+        // Make sure the input is an array.
         $data = (array) $value;
-
         $this->validateNested($attribute, $data);
     }
 
@@ -39,7 +35,7 @@ abstract class NestedRule implements ValidationRule, ValidatorAwareRule
 
     final protected function validateNested(string $attribute, array $data): void
     {
-        $this->nestedValidator = \Illuminate\Support\Facades\Validator::make(
+        $this->nestedValidator = Validator::make(
             $data,
             $this->rules($attribute, $data),
             [],
@@ -49,20 +45,18 @@ abstract class NestedRule implements ValidationRule, ValidatorAwareRule
         $errors = $this->nestedValidator->errors();
 
         if ($errors->isNotEmpty()) {
-            // if the key is part of an array, e.g. key.1.nested, the correct prefix will be key.*.nested
-            // which the following regex will produce
+            // If the key is part of an array, e.g. key.1.nested, the correct prefix will be key.*.nested.
+            // The following regex produces that.
             $parentKey = preg_replace('/\.\d+$/', '.*', $attribute);
 
-            // check if the prefix key is set
-            if (isset($this->validator->customAttributes[$parentKey])) {
-                $messagePrefix = $this->validator->customAttributes[$parentKey].' ';
-            } else {
-                $messagePrefix = '';
-            }
+            // Check if the prefix key is set.
+            $messagePrefix = isset($this->validator->customAttributes[$parentKey])
+                ? $this->validator->customAttributes[$parentKey] . ' '
+                : '';
 
             $messages = collect($errors->messages())->mapWithKeys(function ($messages, $key) use ($attribute, $messagePrefix) {
-                $key = $attribute.'.'.$key;
-                $messages[0] = $messagePrefix.$messages[0];
+                $key = $attribute . '.' . $key;
+                $messages[0] = $messagePrefix . $messages[0];
 
                 return [$key => $messages];
             })->all();

@@ -8,19 +8,21 @@ class PendingAgGridRegistration
 {
     protected string $route;
 
-    protected ?string $name;
+    protected ?string $name = null;
 
     /** @var class-string */
     protected string $controller;
 
-    protected ?array $methods;
+    protected ?array $methods = null;
 
     /**
      * The resource's registration status.
      */
     protected bool $registered = false;
 
-    /** @param  class-string  $controller */
+    /**
+     * @param class-string $controller
+     */
     public function __construct(string $route, string $controller)
     {
         $this->route = $route;
@@ -30,7 +32,6 @@ class PendingAgGridRegistration
     public function name(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -39,11 +40,11 @@ class PendingAgGridRegistration
         $this->registered = true;
 
         $getRowsRoute = Route::post($this->route, [$this->controller, 'rows']);
-        $setValuesRoute = Route::post("$this->route/set-values", [$this->controller, 'setValues']);
+        $setValuesRoute = Route::post("{$this->route}/set-values", [$this->controller, 'setValues']);
 
         if ($this->name) {
             $getRowsRoute->name($this->name);
-            $setValuesRoute->name("$this->name.set-values");
+            $setValuesRoute->name("{$this->name}.set-values");
         }
     }
 

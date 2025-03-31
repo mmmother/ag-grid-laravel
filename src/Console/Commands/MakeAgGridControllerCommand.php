@@ -17,7 +17,7 @@ class MakeAgGridControllerCommand extends GeneratorCommand
      */
     protected $type = 'Controller';
 
-    protected function getStub()
+    protected function getStub(): string
     {
         return $this->resolveStubPath('/stubs/make-ag-grid-controller.stub');
     }

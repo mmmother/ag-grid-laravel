@@ -2,7 +2,7 @@
 
 namespace Clickbar\AgGrid\Support;
 
-use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -25,8 +25,7 @@ class Column
         protected string $colId,
         protected string $name,
     ) {
-        // check for json columns
-
+        // Check for JSON columns.
         $hasPathAccessor = str_contains($this->name, '.');
         if ($hasPathAccessor) {
             $this->isJsonColumn = true;
@@ -54,7 +53,7 @@ class Column
         $parts = Str::of($colId)->explode('.');
 
         if ($parts->count() === 1) {
-            // --> No nested information
+            // --> No nested information.
             return new self($subject->getModel(), [], $colId, $colId);
         }
 
@@ -72,12 +71,12 @@ class Column
 
                 $relations[] = new RelationMetadata($relationName, $currentModel);
             } else {
-                // --> End of relation (further dots must be json nesting)
+                // --> End of relation (further dots must be JSON nesting).
                 $remaining = $parts->skip($index + 1)->implode('.');
                 if (! empty($remaining)) {
-                    $remaining = '.'.$remaining;
+                    $remaining = '.' . $remaining;
                 }
-                $name = $part.$remaining;
+                $name = $part . $remaining;
                 break;
             }
         }
@@ -98,7 +97,7 @@ class Column
 
     public function hasRelations(): bool
     {
-        return ! empty($this->relations);
+        return !empty($this->relations);
     }
 
     public function getDottedRelation(): string
@@ -116,7 +115,7 @@ class Column
     }
 
     /**
-     * Returns the column name of the innermost relation, including possible json accessors.
+     * Returns the column name of the innermost relation, including possible JSON accessors.
      */
     public function getName(): string
     {
@@ -124,7 +123,7 @@ class Column
     }
 
     /**
-     * Returns true if the column refers to a json column.
+     * Returns true if the column refers to a JSON column.
      */
     public function isJsonColumn(): bool
     {
@@ -132,7 +131,7 @@ class Column
     }
 
     /**
-     * Returns true if the column refers to a field within a json column.
+     * Returns true if the column refers to a field within a JSON column.
      */
     public function isNestedJsonColumn(): bool
     {
@@ -140,7 +139,7 @@ class Column
     }
 
     /**
-     * Returns the name of the column with any json path segments (.) replaced by an arrow (->)
+     * Returns the name of the column with any JSON path segments (.) replaced by an arrow (->).
      */
     public function getNameAsJsonPath(): string
     {
@@ -148,11 +147,11 @@ class Column
     }
 
     /**
-     * Returns the name of the column with any json path segments replaces by a call to jsonb_extract_path
+     * Returns the name of the column with any JSON path segments replaced by a call to jsonb_extract_path.
      */
     public function getNameAsJsonAccessor(): Expression|string
     {
-        if (! $this->isNestedJsonColumn) {
+        if (!$this->isNestedJsonColumn) {
             return $this->name;
         }
 
@@ -160,7 +159,8 @@ class Column
         $pathValues = Str::of($this->name)
             ->after('.')
             ->explode('.')
-            ->implode(fn (string $part) => "'$part'", ', ');
+            ->map(fn (string $part) => "'$part'")
+            ->implode(', ');
 
         return DB::raw("jsonb_extract_path($column, $pathValues)");
     }
